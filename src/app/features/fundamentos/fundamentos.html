@@ -1,0 +1,60 @@
+<header class="page-head">
+  <h1>Fundamentos</h1>
+  <p>Sin red ni API: sólo las reglas de cada dimensión, para verlas sin ruido.</p>
+</header>
+
+<section class="card lab">
+  <h2>Lab 1 · Eager vs Lazy</h2>
+  <p class="muted">
+    Crea cada uno y fíjate <strong>cuándo</strong> se ejecuta su cuerpo. Luego llama a
+    <code>.then()</code> / <code>.subscribe()</code> varias veces: la Promise comparte su único resultado,
+    el Observable frío vuelve a ejecutarse en cada suscripción.
+  </p>
+  <div class="columns">
+    <div class="actions" data-kind="promise">
+      <span class="badge" data-kind="promise">promise</span>
+      <button type="button" (click)="createPromise()">1. Crear Promise</button>
+      <button type="button" (click)="thenPromise()" [disabled]="!hasPromise()">2. .then()</button>
+    </div>
+    <div class="actions" data-kind="observable">
+      <span class="badge" data-kind="observable">observable</span>
+      <button type="button" (click)="createObservable()">1. Crear Observable</button>
+      <button type="button" (click)="subscribeObservable()" [disabled]="!hasObservable()">2. .subscribe()</button>
+    </div>
+  </div>
+  <app-event-log [entries]="lazyLog()" />
+</section>
+
+<section class="card lab">
+  <h2>Lab 2 · Un valor vs muchos, y cancelación</h2>
+  <div class="columns">
+    <div>
+      <div class="actions">
+        <span class="badge" data-kind="observable">observable</span>
+        <button type="button" (click)="startStream()">Iniciar stream</button>
+        <button type="button" (click)="cancelStream()" [disabled]="!streamRunning()">unsubscribe()</button>
+      </div>
+      <ul class="ticks">
+        @for (v of streamValues(); track v) {
+          <li>{{ v }}</li>
+        } @empty {
+          <li class="placeholder">Emitirá 10 valores, uno cada 700 ms</li>
+        }
+      </ul>
+      <app-event-log [entries]="streamLog()" />
+    </div>
+    <div>
+      <div class="actions">
+        <span class="badge" data-kind="promise">promise</span>
+        <button type="button" (click)="startPromise()" [disabled]="promisePending()">Iniciar promesa (3 s)</button>
+        <button type="button" (click)="cancelPromise()" [disabled]="!promisePending()">Intentar cancelar</button>
+      </div>
+      <ul class="ticks">
+        <li class="placeholder">
+          @if (promisePending()) { pendiente… } @else { Resuelve una sola vez }
+        </li>
+      </ul>
+      <app-event-log [entries]="promiseLog()" />
+    </div>
+  </div>
+</section>

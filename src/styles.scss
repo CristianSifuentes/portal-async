@@ -1,1 +1,123 @@
-/* You can add global styles to this file, and also import other style files */
+/* Paleta "portal": verde Rick & Morty + un color por dimensión */
+:root {
+  color-scheme: dark;
+  --bg: #0d1117;
+  --bg-deep: #070a0e;
+  --bg-card: #151b24;
+  --border: #263040;
+  --text: #e6edf3;
+  --muted: #8b98a9;
+  --portal: #97ce4c;
+  --promise: #f0a04b;
+  --observable: #4cc9f0;
+  --signal: #c77dff;
+  --warn: #f7c948;
+  --danger: #ff6b6b;
+  --radius: 10px;
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  line-height: 1.5;
+}
+
+a { color: var(--portal); }
+
+h1, h2, h3 { line-height: 1.2; }
+
+code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  color: var(--portal);
+}
+
+pre {
+  overflow-x: auto;
+  padding: 0.75rem 1rem;
+  background: var(--bg-deep);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 0.8rem;
+
+  code { color: var(--text); }
+}
+
+button {
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+
+  &:hover:not(:disabled) { border-color: var(--portal); }
+  &:disabled { opacity: 0.45; cursor: not-allowed; }
+  &.primary { background: var(--portal); color: var(--bg-deep); font-weight: 700; border-color: transparent; }
+}
+
+input[type='number'], input[type='search'] {
+  padding: 0.45rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-deep);
+  color: var(--text);
+  font: inherit;
+
+  &:focus { outline: 2px solid var(--portal); outline-offset: 1px; }
+}
+
+.card {
+  padding: 1.25rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) * 1.4);
+
+  &[data-kind='promise'] { border-top: 3px solid var(--promise); }
+  &[data-kind='observable'] { border-top: 3px solid var(--observable); }
+  &[data-kind='puente'] { border-top: 3px solid var(--portal); }
+  &[data-kind='signal'] { border-top: 3px solid var(--signal); }
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--bg-deep);
+  background: var(--muted);
+
+  &[data-kind='promise'] { background: var(--promise); }
+  &[data-kind='observable'] { background: var(--observable); }
+  &[data-kind='puente'] { background: var(--portal); }
+  &[data-kind='signal'] { background: var(--signal); }
+}
+
+.status {
+  font-size: 0.85rem;
+  color: var(--muted);
+
+  &.ok { color: var(--portal); }
+  &.loading { color: var(--warn); }
+  &.error { color: var(--danger); }
+}
+
+.page-head {
+  margin-bottom: 1.5rem;
+
+  h1 { margin: 0 0 0.5rem; }
+  p { margin: 0; max-width: 75ch; color: var(--muted); }
+}
+
+.muted { color: var(--muted); }

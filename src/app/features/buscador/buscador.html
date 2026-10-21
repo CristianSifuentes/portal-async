@@ -1,0 +1,85 @@
+<header class="page-head">
+  <h1>Buscador en vivo</h1>
+  <p>
+    Escribe rápido, por ejemplo <code>rick sanchez</code>. Cada tecla llega a las dos dimensiones
+    a la vez. Con la latencia aleatoria activa verás cómo la Promise muestra resultados
+    <strong>de una búsqueda vieja</strong>, mientras que el Observable cancela lo que ya no sirve.
+  </p>
+</header>
+
+<div class="search card">
+  <input
+    type="search"
+    placeholder="Busca un personaje: rick, morty, summer…"
+    autocomplete="off"
+    [value]="query()"
+    (input)="onInput($any($event.target).value)"
+  />
+  <label class="toggle">
+    <input type="checkbox" [checked]="simulateLatency()" (change)="simulateLatency.set(!simulateLatency())" />
+    Simular latencia aleatoria (150–1600 ms)
+  </label>
+  <button type="button" (click)="reset()">Reiniciar</button>
+</div>
+
+<div class="duel">
+  <section class="card side" data-kind="promise">
+    <header>
+      <span class="badge" data-kind="promise">promise</span>
+      <h2>fetch por cada tecla</h2>
+    </header>
+    <pre><code>(input)="search(value)"
+
+async search(q) {{ '{' }}
+  this.results.set(await this.api.search(q));
+{{ '}' }}</code></pre>
+
+    @let ps = promiseStats();
+    <dl class="stats">
+      <div><dt>Enviadas</dt><dd>{{ ps.sent }}</dd></div>
+      <div><dt>Completadas</dt><dd>{{ ps.completed }}</dd></div>
+      <div><dt>Canceladas</dt><dd>{{ ps.cancelled }}</dd></div>
+      <div class="bad"><dt>Obsoletas</dt><dd>{{ ps.stale }}</dd></div>
+    </dl>
+
+    <p class="showing" [class.stale]="promiseIsStale()">
+      @if (promiseIsStale()) {
+        ⚠ Muestra resultados de «{{ promiseShownFor() }}» pero escribiste «{{ query().trim() }}»
+      } @else {
+        ✓ Resultados de «{{ promiseShownFor() }}» ({{ promiseResults().length }})
+      }
+    </p>
+    <app-character-strip [characters]="promiseResults()" [max]="10" />
+    <app-event-log [entries]="promiseLog()" emptyText="Empieza a escribir…" />
+  </section>
+
+  <section class="card side" data-kind="observable">
+    <header>
+      <span class="badge" data-kind="observable">observable</span>
+      <h2>debounce + switchMap</h2>
+    </header>
+    <pre><code>keystrokes$.pipe(
+  debounceTime(300),
+  distinctUntilChanged(),
+  switchMap(q => this.api.search(q)),
+).subscribe(r => this.results.set(r));</code></pre>
+
+    @let os = observableStats();
+    <dl class="stats">
+      <div><dt>Enviadas</dt><dd>{{ os.sent }}</dd></div>
+      <div><dt>Completadas</dt><dd>{{ os.completed }}</dd></div>
+      <div class="good"><dt>Canceladas</dt><dd>{{ os.cancelled }}</dd></div>
+      <div><dt>Obsoletas</dt><dd>0</dd></div>
+    </dl>
+
+    <p class="showing">
+      @if (observableShownFor() === query().trim()) {
+        ✓ Resultados de «{{ observableShownFor() }}» ({{ observableResults().length }})
+      } @else {
+        ⏳ Esperando a que termines de escribir…
+      }
+    </p>
+    <app-character-strip [characters]="observableResults()" [max]="10" />
+    <app-event-log [entries]="observableLog()" emptyText="Empieza a escribir…" />
+  </section>
+</div>

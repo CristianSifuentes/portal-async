@@ -1,0 +1,45 @@
+.strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  li {
+    position: relative;
+    width: 56px;
+    height: 56px;
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    object-fit: cover;
+  }
+
+  .dot {
+    position: absolute;
+    right: 2px;
+    bottom: 2px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid var(--bg-card);
+    background: var(--muted);
+
+    &.alive { background: var(--portal); }
+    &.dead { background: var(--danger); }
+  }
+
+  .more {
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--bg-deep);
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+}

@@ -1,0 +1,118 @@
+<header class="page-head">
+  <h1>Comparador de dimensiones</h1>
+  <p>
+    La <strong>misma petición</strong> (<code>GET /character?page=N</code>) escrita de 9 formas distintas.
+    Cambia la página y observa qué estrategias reaccionan solas y cuáles necesitan que pulses un botón.
+  </p>
+</header>
+
+<div class="pager card">
+  <button type="button" (click)="setPage(page() - 1)" [disabled]="page() === 1">‹</button>
+  <label>
+    Página
+    <input
+      type="number"
+      min="1"
+      [max]="totalPages"
+      [value]="page()"
+      (change)="setPage(+$any($event.target).value)"
+    />
+    de {{ totalPages }}
+  </label>
+  <button type="button" (click)="setPage(page() + 1)" [disabled]="page() === totalPages">›</button>
+  <button type="button" class="primary" (click)="runAll()">Ejecutar todas las imperativas</button>
+</div>
+
+<section>
+  <h2>1 · Imperativo <small>tú decides cuándo se dispara</small></h2>
+  <div class="grid">
+    @for (s of imperative; track s.id) {
+      @let run = runs()[s.id];
+      <article class="card strategy" [attr.data-kind]="s.kind">
+        <header>
+          <span class="badge" [attr.data-kind]="s.kind">{{ s.kind }}</span>
+          <h3>{{ s.title }}</h3>
+        </header>
+        <p class="desc">{{ s.description }}</p>
+        <pre><code>{{ s.code }}</code></pre>
+        <footer>
+          <button type="button" (click)="s.run(page())">Ejecutar (pág. {{ page() }})</button>
+          @switch (run?.status) {
+            @case ('loading') { <span class="status loading">cargando…</span> }
+            @case ('ok') {
+              <span class="status ok">{{ run?.data?.results?.length }} personajes · {{ run?.ms }} ms</span>
+            }
+            @case ('error') { <span class="status error">{{ run?.error }}</span> }
+            @default { <span class="status">sin ejecutar</span> }
+          }
+        </footer>
+        @if (run?.data; as data) {
+          <app-character-strip [characters]="data.results" />
+        }
+      </article>
+    }
+  </div>
+</section>
+
+<section>
+  <h2>2 · Declarativo / reactivo <small>se actualiza solo cuando cambia <code>page()</code></small></h2>
+  <div class="grid">
+    @for (s of declarative; track s.id) {
+      <article class="card strategy" [attr.data-kind]="s.kind">
+        <header>
+          <span class="badge" [attr.data-kind]="s.kind">{{ s.kind }}</span>
+          <h3>{{ s.title }}</h3>
+        </header>
+        <p class="desc">{{ s.description }}</p>
+        <pre><code>{{ s.code }}</code></pre>
+
+        @switch (s.id) {
+          @case ('asyncPipe') {
+            @if (viaAsyncPipe$ | async; as data) {
+              <footer><span class="status ok">{{ data.results.length }} personajes</span></footer>
+              <app-character-strip [characters]="data.results" />
+            } @else {
+              <footer><span class="status loading">esperando emisión…</span></footer>
+            }
+          }
+          @case ('toSignal') {
+            @if (viaToSignal(); as data) {
+              <footer><span class="status ok">{{ data.results.length }} personajes</span></footer>
+              <app-character-strip [characters]="data.results" />
+            } @else {
+              <footer><span class="status loading">esperando emisión…</span></footer>
+            }
+          }
+          @case ('httpResource') {
+            <footer>
+              @if (viaHttpResource.isLoading()) {
+                <span class="status loading">isLoading() = true</span>
+              } @else if (viaHttpResource.error()) {
+                <span class="status error">error()</span>
+              } @else {
+                <span class="status ok">status: {{ viaHttpResource.status() }}</span>
+              }
+            </footer>
+            @if (viaHttpResource.hasValue()) {
+              <app-character-strip [characters]="viaHttpResource.value().results" />
+            }
+          }
+          @case ('resource') {
+            <footer>
+              @if (viaResource.isLoading()) {
+                <span class="status loading">isLoading() = true</span>
+              } @else if (viaResource.error()) {
+                <span class="status error">error()</span>
+              } @else {
+                <span class="status ok">status: {{ viaResource.status() }}</span>
+              }
+            </footer>
+            @if (viaResource.hasValue()) {
+              <app-character-strip [characters]="viaResource.value().results" />
+            }
+          }
+        }
+      </article>
+    }
+  </div>
+</section>

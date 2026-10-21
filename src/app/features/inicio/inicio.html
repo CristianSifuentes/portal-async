@@ -1,0 +1,57 @@
+<section class="hero">
+  <div class="portal" aria-hidden="true"></div>
+  <div>
+    <h1>Portal Async</h1>
+    <p class="lead">
+      Dos dimensiones, una misma API. Abre el portal y compara cómo se comportan las
+      <span class="tag" data-kind="promise">Promises</span> y los
+      <span class="tag" data-kind="observable">Observables</span> consumiendo
+      <a href="https://rickandmortyapi.com" target="_blank" rel="noopener">The Rick and Morty API</a>
+      con Angular moderno (standalone, zoneless, signals).
+    </p>
+  </div>
+</section>
+
+<section class="labs">
+  @for (lab of labs; track lab.path) {
+    <a class="card lab" [routerLink]="lab.path">
+      <h2>{{ lab.title }} →</h2>
+      <p>{{ lab.text }}</p>
+    </a>
+  }
+</section>
+
+<section class="card">
+  <h2>Tabla comparativa</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Característica</th>
+          <th><span class="badge" data-kind="promise">Promise</span></th>
+          <th><span class="badge" data-kind="observable">Observable</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of rows; track row.feature) {
+          <tr>
+            <th scope="row">{{ row.feature }}</th>
+            <td>{{ row.promise }}</td>
+            <td>{{ row.observable }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <div class="when">
+    <div>
+      <h3>Usa una Promise cuando…</h3>
+      <p>Necesites un único resultado asíncrono y simple: leer algo una vez, una llamada puntual en un guard o resolver, o integrar un SDK que ya devuelve Promises (en Angular, <code>resource()</code> las consume bien).</p>
+    </div>
+    <div>
+      <h3>Usa un Observable cuando…</h3>
+      <p>Manejes flujos: eventos de teclado, WebSockets, polling, o necesites cancelar, debouncear, reintentar o combinar peticiones. En el template, conviértelo con <code>toSignal()</code> o usa <code>httpResource()</code>.</p>
+    </div>
+  </div>
+</section>
